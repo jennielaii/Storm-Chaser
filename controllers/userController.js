@@ -4,9 +4,9 @@ const userController = {};
 userController.createUser = async (req, res) => {
     try {
         const user = await models.user.create({
-            name: req.body.name,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
             email: req.body.email,
-            password: req.body.password,
             region: req.body.region,
         })
         res.json({message: 'success', user })
@@ -17,37 +17,16 @@ userController.createUser = async (req, res) => {
     }
 }
 
-userController.login = async (req, res) => {
-    try{
-
-        const user = await models.user.findOne({where: { email: req.body.email }})
-
-        if ( user && user.password === req.body.password){
-            res.json({message: 'success', user: user})
-        }
-        else{
-            res.status(404).json({ message: 'login failed'})
-        }
-
-    }
-    catch(error){
-        console.log(error)
-        res.status(404).json(error.message)
-    }
-}
-
-userController.verifyUser = async (req, res) => {
-    try{
-        const user = await models.user.findOne({ where: { id: req.headers.authorization }})
+userController.getUsers = async (req, res) => {
+    try {
+        const users = await models.user.findAll()
         
-        if (user) { res.json({ user: user }) }
-        else { res.status(404).json({ message: 'user not found' }) }
-
-
-    }
-    catch(error){
+        res.json({success: 'users Found', users})
+        
+    } 
+    catch (error) {
         console.log(error)
-        res.status(404).json(error.message)
+        res.status(404).json({error: error.message})    
     }
 }
 
